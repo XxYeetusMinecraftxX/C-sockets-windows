@@ -4,20 +4,20 @@
 #include <winsock2.h>
 #include <unistd.h>
 
-typedef struct {
-    int var;
-} data;
+typedef struct{
+    int x,y,z;
+} pdata;
 
-
-int main(){
+int main(int argc, char *argv[]){
 
     WSADATA wsa;
     SOCKET sck;
     char addr[] = "";
     char buf[1024];
-    int port = 8000;
+    int port = 8080;
     struct sockaddr_in server, sender;
-    data pck;
+
+    pdata pck;
 
     printf("Input address:\n");
     scanf("%s", addr);
@@ -30,7 +30,12 @@ int main(){
         printf("broken socket");
     }
 
-    //server.sin_addr.s_addr = inet_addr(addr);
+    if(addr == "all"){
+        server.sin_addr.s_addr = inet_addr("127.0.0.1");
+    } else {
+        server.sin_addr.s_addr = inet_addr(addr);
+    }
+
     server.sin_addr.s_addr = INADDR_ANY;
     server.sin_family = AF_INET;
     server.sin_port = htons(port);
@@ -42,23 +47,15 @@ int main(){
     int n;
     int sender_len = sizeof(sender);
 
-    printf("a");
-
     while(1){
 
     memset(&sender, 0, sizeof(sender));
-    
-    printf("b");
 
     n = recvfrom(sck, (char *) buf, sizeof(buf), 0, (struct sockaddr *) &sender, &sender_len);
 
-    printf("c");
+    memcpy(&pck, &buf, sizeof(pdata));
+    printf("%d %d %d\n", pck.x, pck.y, pck.z);
 
-    buf[n] = '\0';
-    printf("%s\n", buf);
-    printf("%d\n", n);
-
-    sleep(5);
     }
 
     close(sck);
