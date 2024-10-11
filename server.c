@@ -31,6 +31,8 @@ int main(int argc, char *argv[]){
     }
 
     if(addr == "all"){
+        server.sin_addr.s_addr = INADDR_ANY;
+    } else if(addr == "localhost"){
         server.sin_addr.s_addr = inet_addr("127.0.0.1");
     } else {
         server.sin_addr.s_addr = inet_addr(addr);
@@ -55,7 +57,6 @@ int main(int argc, char *argv[]){
 
     memcpy(&pck, &buf, sizeof(pdata));
     printf("%d %d %d\n", pck.x, pck.y, pck.z);
-
     }
 
     close(sck);
